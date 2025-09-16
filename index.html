@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Transport 3D — Кривой Рог</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="container header">
+      <div class="brand">Transport 3D</div>
+      <nav class="nav">
+        <a href="#home">Главная</a>
+        <a href="#viewer">3D</a>
+        <a href="#services">Услуги</a>
+        <a href="#map">Карта</a>
+        <a href="#contacts">Контакты</a>
+      </nav>
+      <div class="lang-switch">
+        <button data-lang="ru" class="lang-btn active">RU</button>
+        <button data-lang="ua" class="lang-btn">UA</button>
+      </div>
+    </header>
+
+    <main>
+      <!-- Hero -->
+      <section id="home" class="container section">
+        <h1 data-i18n="hero.title" class="section-title">Перевозки и трансфер в Кривом Роге</h1>
+        <p data-i18n="hero.subtitle" class="section-subtitle">Легковые, микроавтобусы и универсалы. 3D-просмотр, карта, онлайн-заявка.</p>
+
+        <div class="cards">
+          <div class="car-card" data-model="sedan" tabindex="0">
+            <div class="frame"></div>
+            <div class="art sedan">Легковая</div>
+          </div>
+          <div class="car-card" data-model="van" tabindex="0">
+            <div class="frame"></div>
+            <div class="art van">Микроавтобус</div>
+          </div>
+          <div class="car-card" data-model="wagon" tabindex="0">
+            <div class="frame"></div>
+            <div class="art wagon">Универсал</div>
+          </div>
+        </div>
+
+        <div class="cta-row">
+          <a class="btn primary" href="#contacts" data-i18n="hero.ctaOrder">Заказать машину</a>
+          <a class="btn" href="#map" data-i18n="hero.ctaMap">Посмотреть карту</a>
+        </div>
+
+        <p class="muted" data-i18n="hero.note">Главная картинка — статичная заглушка. Нажмите на любую карточку, чтобы открыть 3D-бокс.</p>
+      </section>
+
+      <!-- 3D Viewer -->
+      <section id="viewer" class="container section">
+        <div class="section-header">
+          <h2 data-i18n="viewer.title">3D-бокс модели</h2>
+          <div class="viewer-controls">
+            <button id="btn-prev" class="btn" data-i18n="viewer.prev">Пред. машина</button>
+            <button id="btn-next" class="btn" data-i18n="viewer.next">След. машина</button>
+            <button id="btn-ext" class="btn" data-i18n="viewer.ext">Камера: Снаружи</button>
+            <button id="btn-int" class="btn" data-i18n="viewer.int">Камера: Салон</button>
+            <button id="btn-vr" class="btn outline" data-i18n="viewer.vr">VR/AR (заглушка)</button>
+            <a class="btn" href="#home" data-i18n="viewer.back">На главную</a>
+          </div>
+        </div>
+        <div class="viewer-wrap">
+          <canvas id="three-canvas" aria-label="3D просмотр"></canvas>
+          <div class="specs">
+            <table>
+              <thead>
+                <tr>
+                  <th data-i18n="specs.type">Тип</th>
+                  <th data-i18n="specs.price">Цена, грн</th>
+                  <th data-i18n="specs.km">Км включено</th>
+                  <th data-i18n="specs.capacity">Вместимость</th>
+                </tr>
+              </thead>
+              <tbody id="specs-body"></tbody>
+            </table>
+          </div>
+        </div>
+        <div class="row-gap">
+          <button id="btn-compare" class="btn outline" data-i18n="viewer.compare">Сравнить</button>
+          <button id="btn-calc" class="btn outline" data-i18n="viewer.calc">Калькулятор стоимости</button>
+        </div>
+      </section>
+
+      <!-- Services -->
+      <section id="services" class="container section">
+        <h2 data-i18n="services.title">Услуги</h2>
+        <div class="service-grid">
+          <div class="service-card">
+            <div class="icon">🚗</div>
+            <div class="title" data-i18n="services.rent">Аренда</div>
+            <div class="price">от 400 грн</div>
+            <button class="btn primary" data-i18n="services.order">Заказать</button>
+          </div>
+          <div class="service-card">
+            <div class="icon">🧳</div>
+            <div class="title" data-i18n="services.transfer">Трансфер</div>
+            <div class="price">от 500 грн</div>
+            <button class="btn primary" data-i18n="services.order">Заказать</button>
+          </div>
+          <div class="service-card">
+            <div class="icon">📦</div>
+            <div class="title" data-i18n="services.cargo">Перевозка грузов</div>
+            <div class="price">от 700 грн</div>
+            <button class="btn primary" data-i18n="services.order">Заказать</button>
+          </div>
+          <div class="service-card">
+            <div class="icon">🚕</div>
+            <div class="title" data-i18n="services.taxi">Такси-услуги</div>
+            <div class="price">от 100 грн</div>
+            <button class="btn primary" data-i18n="services.order">Заказать</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Map -->
+      <section id="map" class="container section">
+        <h2 data-i18n="map.title">Карта: Кривой Рог</h2>
+        <div class="map-toolbar">
+          <label><input type="checkbox" class="flt" value="sedan" checked /> <span data-i18n="filters.sedan">Легковые</span></label>
+          <label><input type="checkbox" class="flt" value="van" checked /> <span data-i18n="filters.van">Микроавтобусы</span></label>
+          <label><input type="checkbox" class="flt" value="wagon" checked /> <span data-i18n="filters.wagon">Универсалы</span></label>
+        </div>
+        <div id="leaflet" class="map"></div>
+      </section>
+
+      <!-- Contacts -->
+      <section id="contacts" class="container section">
+        <h2 data-i18n="contacts.title">Контакты</h2>
+        <div class="contacts-grid">
+          <div>
+            <div class="socials">
+              <a href="#" aria-label="Telegram" class="social">Telegram</a>
+              <a href="#" aria-label="WhatsApp" class="social">WhatsApp</a>
+              <a href="#" aria-label="Facebook" class="social">Facebook</a>
+              <a href="#" aria-label="Instagram" class="social">Instagram</a>
+            </div>
+            <div class="messengers">
+              <a class="btn" href="tel:+380000000000">📞 +38 000 000 00 00</a>
+              <a class="btn" href="https://t.me/your_company" target="_blank" rel="noreferrer">TG</a>
+              <a class="btn" href="https://wa.me/380000000000" target="_blank" rel="noreferrer">WA</a>
+            </div>
+          </div>
+
+          <form id="lead-form" class="lead-form">
+            <label>
+              <span data-i18n="form.name">Имя</span>
+              <input type="text" name="name" required />
+            </label>
+            <label>
+              <span data-i18n="form.phone">Телефон</span>
+              <input type="tel" name="phone" required />
+            </label>
+            <label>
+              <span data-i18n="form.msg">Комментарий</span>
+              <textarea name="message" rows="3"></textarea>
+            </label>
+            <button class="btn primary" type="submit" data-i18n="form.send">Оставить заявку</button>
+          </form>
+        </div>
+      </section>
+    </main>
+
+    <footer class="container footer">
+      <span>© <span id="year"></span> Transport 3D</span>
+    </footer>
+
+    <script src="https://unpkg.com/three@0.160.0/build/three.min.js"></script>
+    <script src="https://unpkg.com/three@0.160.0/examples/js/controls/OrbitControls.js"></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <script src="app.js"></script>
+  </body>
+  </html>
+
+
