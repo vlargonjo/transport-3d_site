@@ -27,11 +27,24 @@
     </header>
 
     <main>
-      <!-- Hero -->
-      <section id="home" class="container section">
-        <h1 data-i18n="hero.title" class="section-title">Перевозки и трансфер в Кривом Роге</h1>
-        <p data-i18n="hero.subtitle" class="section-subtitle">Легковые, микроавтобусы и универсалы. 3D-просмотр, карта, онлайн-заявка.</p>
+      <!-- Hero (full-screen image) -->
+      <section id="home" class="hero-full" style="background-image:url('hero.jpg');">
+        <div class="hero-overlay"></div>
+        <div class="container hero-content">
+          <div class="hero-eyebrow">Для тех, кто ценит качество</div>
+          <h1 class="hero-title">Ваш комфортный трансфер – без стресса и посредников</h1>
+          <p class="hero-sub">Путешествия – это больше, чем просто дорога.</p>
+          <div class="cta-row">
+            <a class="btn primary" href="#contacts">Заказать поездку</a>
+            <a class="btn" href="#viewer">Рассчитать стоимость</a>
+          </div>
+        </div>
+      </section>
 
+      <!-- Models cards (moved below hero) -->
+      <section id="models" class="container section">
+        <h2 class="section-title">Выберите тип автомобиля</h2>
+        <p class="section-subtitle">Легковые, микроавтобусы и универсалы</p>
         <div class="cards">
           <div class="car-card" data-model="sedan" tabindex="0">
             <div class="frame"></div>
@@ -46,13 +59,6 @@
             <div class="art wagon">Универсал</div>
           </div>
         </div>
-
-        <div class="cta-row">
-          <a class="btn primary" href="#contacts" data-i18n="hero.ctaOrder">Заказать машину</a>
-          <a class="btn" href="#map" data-i18n="hero.ctaMap">Посмотреть карту</a>
-        </div>
-
-        <p class="muted" data-i18n="hero.note">Главная картинка — статичная заглушка. Нажмите на любую карточку, чтобы открыть 3D-бокс.</p>
       </section>
 
       <!-- 3D Viewer -->
