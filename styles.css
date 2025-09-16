@@ -56,25 +56,20 @@ body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,C
 
 /* Services */
 .service-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
-.service-card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;display:flex;flex-direction:column;gap:6px}
+.service-card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;position:relative;height:200px;perspective:1000px}
+.card-inner{position:relative;width:100%;height:100%;text-align:center;transition:transform 0.6s;transform-style:preserve-3d}
+.service-card.flipped .card-inner{transform:rotateY(180deg)}
+.card-front,.card-back{position:absolute;width:100%;height:100%;backface-visibility:hidden;display:flex;flex-direction:column;justify-content:space-between;padding:8px}
+.card-back{transform:rotateY(180deg);background:var(--card);border-radius:10px}
 .service-card .icon{font-size:28px}
 .service-card .title{font-weight:600}
 .service-card .price{color:var(--muted)}
 .service-actions{display:flex;gap:8px;margin-top:8px}
 .service-actions .btn{flex:1;font-size:14px;padding:8px 12px}
+.back-content h4{margin:0 0 12px;font-size:18px;color:var(--acc)}
+.back-details{flex:1;text-align:left;color:var(--muted);font-size:14px;line-height:1.4}
+.back-details p{margin:4px 0}
 
-/* Service Modal */
-.service-modal{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.8);display:none;align-items:center;justify-content:center;z-index:1000;padding:16px}
-.service-modal.show{display:flex !important}
-.service-modal-content{background:var(--card);border:1px solid var(--line);border-radius:16px;max-width:600px;width:100%;max-height:80vh;overflow:hidden;display:flex;flex-direction:column}
-.service-modal-header{display:flex;align-items:center;justify-content:space-between;padding:20px;border-bottom:1px solid var(--line)}
-.service-modal-header h3{margin:0;font-size:24px}
-.service-modal-header .modal-nav{display:flex;align-items:center;gap:8px}
-.service-modal-close{background:none;border:none;color:var(--muted);font-size:24px;cursor:pointer;padding:4px}
-.service-modal-close:hover{color:var(--fg)}
-.service-modal-body{padding:20px;overflow-y:auto;flex:1}
-.service-modal-footer{display:flex;gap:12px;padding:20px;border-top:1px solid var(--line)}
-.service-modal-footer .btn{flex:1}
 /* Features */
 .features-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:16px}
 .feature-card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;display:flex;flex-direction:column;gap:8px}

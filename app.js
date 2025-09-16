@@ -38,6 +38,7 @@ const translations = {
     'services.children': 'Поездка с детьми',
     'services.order': 'Заказать',
     'services.details': 'Подробнее',
+    'services.back': 'Назад',
     'modal.close': 'Закрыть',
     // Features
     'feat.inspect.title': 'Осмотр автомобиля онлайн',
@@ -97,6 +98,7 @@ const translations = {
     'services.children': 'Поїздка з дітьми',
     'services.order': 'Замовити',
     'services.details': 'Детальніше',
+    'services.back': 'Назад',
     'modal.close': 'Закрити',
     // Features
     'feat.inspect.title': 'Огляд автомобіля онлайн',
@@ -141,326 +143,9 @@ $$('.lang-btn').forEach(btn=>{
 // Footer year
 $('#year').textContent = new Date().getFullYear()
 
-// Hero cards navigation -> scroll to viewer and set model
-const models = ['sedan','van','wagon']
-let modelIndex = 0
-function setModelByName(name){
-  const idx = models.indexOf(name)
-  modelIndex = idx>=0 ? idx : 0
-  updateSpecs()
-  // цвет куба для различия
-  const colorMap = {sedan:0x2dd4bf, van:0x60a5fa, wagon:0xf59e0b}
-  cube.material.color.setHex(colorMap[models[modelIndex]])
-}
+// Global variables
+let models, modelIndex, specsTable, specsData, canvas, renderer, scene, camera, controls, cube, map, markers, activeTypes
 
-$$('.car-card').forEach(card=>{
-  card.addEventListener('click', ()=>{
-    setModelByName(card.dataset.model)
-    location.hash = '#viewer'
-    document.getElementById('viewer').scrollIntoView({behavior:'smooth'})
-  })
-})
-
-// Specs placeholder
-const specsTable = $('#specs-body')
-const specsData = {
-  sedan: { type:'Легковая', price: '15/км', km: '20', cap: '4' },
-  van:   { type:'Микроавтобус', price: '20/км', km: '20', cap: '8-12' },
-  wagon: { type:'Универсал', price: '18/км', km: '25', cap: '4-5 + багаж' },
-}
-function updateSpecs(){
-  const key = models[modelIndex]
-  const s = specsData[key]
-  specsTable.innerHTML = `<tr><td>${s.type}</td><td>${s.price}</td><td>${s.km}</td><td>${s.cap}</td></tr>`
-}
-
-// Three.js minimal viewer (cube placeholder)
-const canvas = document.getElementById('three-canvas')
-const renderer = new THREE.WebGLRenderer({canvas, antialias:true})
-renderer.setPixelRatio(Math.min(2, window.devicePixelRatio || 1))
-function resize(){
-  const rect = canvas.getBoundingClientRect()
-  renderer.setSize(rect.width, rect.height, false)
-  camera.aspect = rect.width / rect.height
-  camera.updateProjectionMatrix()
-}
-const scene = new THREE.Scene()
-scene.background = new THREE.Color(0x0a0f18)
-const camera = new THREE.PerspectiveCamera(60, 1, 0.1, 100)
-camera.position.set(3, 2, 4)
-const controls = new THREE.OrbitControls(camera, canvas)
-controls.enableDamping = true
-const light = new THREE.DirectionalLight(0xffffff, 1)
-light.position.set(3,4,2)
-scene.add(light)
-scene.add(new THREE.AmbientLight(0xffffff, .3))
-const geom = new THREE.BoxGeometry(1.6, .8, 3)
-const mat = new THREE.MeshStandardMaterial({ color: 0x2dd4bf, roughness:.4, metalness:.1 })
-const cube = new THREE.Mesh(geom, mat)
-scene.add(cube)
-const floor = new THREE.Mesh(new THREE.CircleGeometry(3, 48), new THREE.MeshStandardMaterial({color:0x111827, roughness:1}))
-floor.rotation.x = -Math.PI/2
-floor.position.y = -0.5
-scene.add(floor)
-
-function animate(){
-  requestAnimationFrame(animate)
-  cube.rotation.y += 0.003
-  controls.update()
-  renderer.render(scene, camera)
-}
-window.addEventListener('resize', resize)
-resize(); animate()
-updateSpecs()
-
-// Camera buttons (placeholder behavior)
-document.getElementById('btn-ext').addEventListener('click', ()=>{
-  camera.position.set(3,2,4)
-})
-document.getElementById('btn-int').addEventListener('click', ()=>{
-  camera.position.set(0.2, 0.8, 0.6)
-})
-document.getElementById('btn-prev').addEventListener('click', ()=>{
-  modelIndex = (modelIndex - 1 + models.length) % models.length
-  setModelByName(models[modelIndex])
-})
-document.getElementById('btn-next').addEventListener('click', ()=>{
-  modelIndex = (modelIndex + 1) % models.length
-  setModelByName(models[modelIndex])
-})
-
-// VR placeholder
-document.getElementById('btn-vr').addEventListener('click', ()=>{
-  alert('WebXR/AR будет подключён позже (заглушка).')
-})
-
-// Leaflet map
-const map = L.map('leaflet', { zoomControl: true }).setView([47.9105, 33.3918], 12)
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-  maxZoom: 19,
-  attribution: '&copy; OpenStreetMap'
-}).addTo(map)
-
-// Примеры районов (условные точки)
-const districts = [
-  { name: 'Центрально-Городской', coord: [47.908, 33.391], cars:['sedan','van'] },
-  { name: 'Покровский', coord: [47.951, 33.417], cars:['sedan','wagon'] },
-  { name: 'Саксаганский', coord: [47.907, 33.43], cars:['van','wagon'] },
-]
-
-const markers = districts.map(d=>{
-  const marker = L.marker(d.coord).addTo(map)
-  marker.bindPopup(() => {
-    const available = d.cars.map(c=>({
-      sedan:'Легковая',van:'Микроавтобус',wagon:'Универсал'
-    })[c]).join(', ')
-    const exampleRoute = 'Пример маршрута: 5–8 км'
-    const approx = 'Ориентировочная цена: 150–300 грн'
-    return `<b>${d.name}</b><br/>Доступно: ${available}<br/>${exampleRoute}<br/>${approx}`
-  })
-  return {marker, data:d}
-})
-
-// Фильтр по типам
-const activeTypes = new Set(models)
-$$('.flt').forEach(cb=>{
-  cb.addEventListener('change', ()=>{
-    if(cb.checked) activeTypes.add(cb.value); else activeTypes.delete(cb.value)
-    markers.forEach(({marker, data})=>{
-      const visible = data.cars.some(c=>activeTypes.has(c))
-      if(visible){ marker.addTo(map) } else { map.removeLayer(marker) }
-    })
-  })
-})
-
-// Service details data
-const serviceDetails = {
-  cargo: {
-    ru: {
-      title: 'Перевозка грузов',
-      content: `
-        <h4>Что входит в услугу:</h4>
-        <ul>
-          <li>Перевозка мебели, техники, личных вещей</li>
-          <li>Упаковка и разгрузка (по договоренности)</li>
-          <li>Страхование груза</li>
-          <li>Отслеживание в реальном времени</li>
-        </ul>
-        <h4>Типы транспорта:</h4>
-        <ul>
-          <li>Универсал - до 500 кг</li>
-          <li>Микроавтобус - до 1 тонны</li>
-          <li>Грузовик - до 3 тонн</li>
-        </ul>
-        <p><strong>Цена:</strong> от 700 грн за поездку</p>
-      `
-    },
-    ua: {
-      title: 'Перевезення вантажів',
-      content: `
-        <h4>Що входить до послуги:</h4>
-        <ul>
-          <li>Перевезення меблів, техніки, особистих речей</li>
-          <li>Пакування та розвантаження (за домовленістю)</li>
-          <li>Страхування вантажу</li>
-          <li>Відстеження в реальному часі</li>
-        </ul>
-        <h4>Типи транспорту:</h4>
-        <ul>
-          <li>Універсал - до 500 кг</li>
-          <li>Мікроавтобус - до 1 тонни</li>
-          <li>Вантажівка - до 3 тонн</li>
-        </ul>
-        <p><strong>Ціна:</strong> від 700 грн за поїздку</p>
-      `
-    }
-  },
-  taxi: {
-    ru: {
-      title: 'Такси-услуги',
-      content: `
-        <h4>Преимущества:</h4>
-        <ul>
-          <li>Быстрое прибытие (5-15 минут)</li>
-          <li>Фиксированные тарифы</li>
-          <li>Опытные водители</li>
-          <li>Чистые и комфортные авто</li>
-        </ul>
-        <h4>Тарифы:</h4>
-        <ul>
-          <li>По городу - от 100 грн</li>
-          <li>В аэропорт - от 300 грн</li>
-          <li>Междугородние - от 15 грн/км</li>
-        </ul>
-        <p><strong>Цена:</strong> от 100 грн за поездку</p>
-      `
-    },
-    ua: {
-      title: 'Таксі-послуги',
-      content: `
-        <h4>Переваги:</h4>
-        <ul>
-          <li>Швидке прибуття (5-15 хвилин)</li>
-          <li>Фіксовані тарифи</li>
-          <li>Досвідчені водії</li>
-          <li>Чисті та комфортні авто</li>
-        </ul>
-        <h4>Тарифи:</h4>
-        <ul>
-          <li>По місту - від 100 грн</li>
-          <li>В аеропорт - від 300 грн</li>
-          <li>Міжміські - від 15 грн/км</li>
-        </ul>
-        <p><strong>Ціна:</strong> від 100 грн за поїздку</p>
-      `
-    }
-  },
-  pets: {
-    ru: {
-      title: 'Поездка с животными',
-      content: `
-        <h4>Особенности:</h4>
-        <ul>
-          <li>Специальные переноски для животных</li>
-          <li>Водители с опытом перевозки питомцев</li>
-          <li>Остановки для прогулок (при длительных поездках)</li>
-          <li>Дополнительная уборка салона</li>
-        </ul>
-        <h4>Требования:</h4>
-        <ul>
-          <li>Справка о вакцинации</li>
-          <li>Поводок и намордник для собак</li>
-          <li>Предварительное уведомление</li>
-        </ul>
-        <p><strong>Цена:</strong> от 200 грн за поездку</p>
-      `
-    },
-    ua: {
-      title: 'Поїздка з тваринами',
-      content: `
-        <h4>Особливості:</h4>
-        <ul>
-          <li>Спеціальні переноски для тварин</li>
-          <li>Водії з досвідом перевезення улюбленців</li>
-          <li>Зупинки для прогулянок (при тривалих поїздках)</li>
-          <li>Додаткове прибирання салону</li>
-        </ul>
-        <h4>Вимоги:</h4>
-        <ul>
-          <li>Довідка про вакцинацію</li>
-          <li>Повідок та намордник для собак</li>
-          <li>Попереднє повідомлення</li>
-        </ul>
-        <p><strong>Ціна:</strong> від 200 грн за поїздку</p>
-      `
-    }
-  },
-  children: {
-    ru: {
-      title: 'Поездка с детьми',
-      content: `
-        <h4>Безопасность:</h4>
-        <ul>
-          <li>Детские автокресла всех категорий</li>
-          <li>Водители с опытом перевозки детей</li>
-          <li>Соблюдение правил безопасности</li>
-          <li>Дополнительные ремни безопасности</li>
-        </ul>
-        <h4>Удобства:</h4>
-        <ul>
-          <li>Игрушки и развлечения в дороге</li>
-          <li>Остановки по требованию</li>
-          <li>Тихая музыка или тишина</li>
-          <li>Контроль температуры в салоне</li>
-        </ul>
-        <p><strong>Цена:</strong> от 150 грн за поездку</p>
-      `
-    },
-    ua: {
-      title: 'Поїздка з дітьми',
-      content: `
-        <h4>Безпека:</h4>
-        <ul>
-          <li>Дитячі автокрісла всіх категорій</li>
-          <li>Водії з досвідом перевезення дітей</li>
-          <li>Дотримання правил безпеки</li>
-          <li>Додаткові ремені безпеки</li>
-        </ul>
-        <h4>Зручності:</h4>
-        <ul>
-          <li>Іграшки та розваги в дорозі</li>
-          <li>Зупинки за вимогою</li>
-          <li>Тиха музика або тиша</li>
-          <li>Контроль температури в салоні</li>
-        </ul>
-        <p><strong>Ціна:</strong> від 150 грн за поїздку</p>
-      `
-    }
-  }
-}
-
-// Service modal functionality
-const modal = $('#service-modal')
-const modalTitle = $('#modal-title')
-const modalContent = $('#modal-content')
-const serviceOrder = ['cargo','taxi','pets','children']
-let currentServiceIndex = 0
-
-function showServiceDetails(serviceType) {
-  const details = serviceDetails[serviceType][currentLang]
-  modalTitle.textContent = details.title
-  modalContent.innerHTML = details.content
-  modal.classList.add('show')
-}
-
-function hideServiceDetails() {
-  modal.classList.remove('show')
-}
-
-function showByIndex(idx){
-  currentServiceIndex = (idx + serviceOrder.length) % serviceOrder.length
-  showServiceDetails(serviceOrder[currentServiceIndex])
-}
 
 
 // Lead form
@@ -473,54 +158,205 @@ $('#lead-form').addEventListener('submit', (e)=>{
   e.currentTarget.reset()
 })
 
-// Init
-console.log('Script loaded, initializing...')
-applyI18n('ru')
+// Wait for DOM to be ready
+document.addEventListener('DOMContentLoaded', function() {
+  console.log('DOM loaded, initializing...')
+  
+  // Init
+  applyI18n('ru')
+  
+  // Initialize variables
+  models = ['sedan','van','wagon']
+  modelIndex = 0
+  specsTable = $('#specs-body')
+  specsData = {
+    sedan: { type:'Легковая', price: '15/км', km: '20', cap: '4' },
+    van:   { type:'Микроавтобус', price: '20/км', km: '20', cap: '8-12' },
+    wagon: { type:'Универсал', price: '18/км', km: '25', cap: '4-5 + багаж' },
+  }
+  
+  // Debug: Check if buttons exist
+  const detailButtons = document.querySelectorAll('.service-details-btn')
+  const orderButtons = document.querySelectorAll('.btn.primary')
+  console.log('Found detail buttons:', detailButtons.length)
+  console.log('Found order buttons:', orderButtons.length)
+  
+  // Test: Add click listeners directly to buttons
+  detailButtons.forEach((btn, index) => {
+    console.log(`Adding listener to button ${index}`)
+    btn.addEventListener('click', (e) => {
+      e.preventDefault()
+      console.log('Direct button click!')
+      const serviceCard = btn.closest('.service-card')
+      if(serviceCard) {
+        serviceCard.classList.toggle('flipped')
+        console.log('Card flipped via direct listener')
+      }
+    })
+  })
 
-// Event delegation for service details buttons
-document.addEventListener('click', (e)=>{
-  console.log('Click detected on:', e.target)
-  const detailsBtn = e.target.closest('.service-details-btn')
-  if(detailsBtn){
-    console.log('Details button clicked!')
-    const serviceCard = detailsBtn.closest('.service-card')
-    if(serviceCard){
-      const serviceType = serviceCard.dataset.service
-      console.log('Service type:', serviceType)
-      currentServiceIndex = serviceOrder.indexOf(serviceType)
-      showServiceDetails(serviceType)
+  // Service order button functionality
+  document.addEventListener('click', (e)=>{
+    const orderBtn = e.target.closest('.btn.primary')
+    if(orderBtn && (e.target.textContent.includes('Заказать') || e.target.textContent.includes('Замовити'))){
+      e.preventDefault()
+      console.log('Order button clicked!')
+      // Scroll to contacts form
+      document.getElementById('contacts').scrollIntoView({behavior:'smooth'})
+      // Focus on name input
+      setTimeout(()=>{
+        const nameInput = document.querySelector('input[name="name"]')
+        if(nameInput) nameInput.focus()
+      }, 500)
     }
+  })
+  
+  // Initialize 3D viewer after a short delay to ensure Three.js is loaded
+  setTimeout(() => {
+    init3DViewer()
+    initMap()
+    initCarCards()
+  }, 100)
+})
+
+function init3DViewer() {
+  try {
+    canvas = document.getElementById('three-canvas')
+    if (!canvas) return
+    
+    renderer = new THREE.WebGLRenderer({canvas, antialias:true})
+    renderer.setPixelRatio(Math.min(2, window.devicePixelRatio || 1))
+    
+    function resize(){
+      const rect = canvas.getBoundingClientRect()
+      renderer.setSize(rect.width, rect.height, false)
+      camera.aspect = rect.width / rect.height
+      camera.updateProjectionMatrix()
+    }
+    
+    scene = new THREE.Scene()
+    scene.background = new THREE.Color(0x0a0f18)
+    camera = new THREE.PerspectiveCamera(60, 1, 0.1, 100)
+    camera.position.set(3, 2, 4)
+    controls = new THREE.OrbitControls(camera, canvas)
+    controls.enableDamping = true
+    const light = new THREE.DirectionalLight(0xffffff, 1)
+    light.position.set(3,4,2)
+    scene.add(light)
+    scene.add(new THREE.AmbientLight(0xffffff, .3))
+    const geom = new THREE.BoxGeometry(1.6, .8, 3)
+    const mat = new THREE.MeshStandardMaterial({ color: 0x2dd4bf, roughness:.4, metalness:.1 })
+    cube = new THREE.Mesh(geom, mat)
+    scene.add(cube)
+    const floor = new THREE.Mesh(new THREE.CircleGeometry(3, 48), new THREE.MeshStandardMaterial({color:0x111827, roughness:1}))
+    floor.rotation.x = -Math.PI/2
+    floor.position.y = -0.5
+    scene.add(floor)
+
+    function animate(){
+      requestAnimationFrame(animate)
+      cube.rotation.y += 0.003
+      controls.update()
+      renderer.render(scene, camera)
+    }
+    window.addEventListener('resize', resize)
+    resize(); animate()
+    updateSpecs()
+
+    // Camera buttons
+    const btnExt = document.getElementById('btn-ext')
+    const btnInt = document.getElementById('btn-int')
+    const btnPrev = document.getElementById('btn-prev')
+    const btnNext = document.getElementById('btn-next')
+    const btnVr = document.getElementById('btn-vr')
+    
+    if(btnExt) btnExt.addEventListener('click', ()=> camera.position.set(3,2,4))
+    if(btnInt) btnInt.addEventListener('click', ()=> camera.position.set(0.2, 0.8, 0.6))
+    if(btnPrev) btnPrev.addEventListener('click', ()=>{
+      modelIndex = (modelIndex - 1 + models.length) % models.length
+      setModelByName(models[modelIndex])
+    })
+    if(btnNext) btnNext.addEventListener('click', ()=>{
+      modelIndex = (modelIndex + 1) % models.length
+      setModelByName(models[modelIndex])
+    })
+    if(btnVr) btnVr.addEventListener('click', ()=> alert('WebXR/AR будет подключён позже (заглушка).'))
+    
+  } catch (error) {
+    console.error('3D Viewer initialization failed:', error)
   }
-})
+}
 
-// Close modal events
-$$('.service-modal-close').forEach(btn => {
-  btn.addEventListener('click', hideServiceDetails)
-})
+function initMap() {
+  try {
+    if (typeof L === 'undefined') return
+    
+    map = L.map('leaflet', { zoomControl: true }).setView([47.9105, 33.3918], 12)
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19,
+      attribution: '&copy; OpenStreetMap'
+    }).addTo(map)
 
-modal.addEventListener('click', (e) => {
-  if (e.target === modal) hideServiceDetails()
-})
+    const districts = [
+      { name: 'Центрально-Городской', coord: [47.908, 33.391], cars:['sedan','van'] },
+      { name: 'Покровский', coord: [47.951, 33.417], cars:['sedan','wagon'] },
+      { name: 'Саксаганский', coord: [47.907, 33.43], cars:['van','wagon'] },
+    ]
 
-// Modal carousel (Prev/Next)
-document.getElementById('svc-prev').addEventListener('click', ()=> showByIndex(currentServiceIndex - 1))
-document.getElementById('svc-next').addEventListener('click', ()=> showByIndex(currentServiceIndex + 1))
+    markers = districts.map(d=>{
+      const marker = L.marker(d.coord).addTo(map)
+      marker.bindPopup(() => {
+        const available = d.cars.map(c=>({
+          sedan:'Легковая',van:'Микроавтобус',wagon:'Универсал'
+        })[c]).join(', ')
+        const exampleRoute = 'Пример маршрута: 5–8 км'
+        const approx = 'Ориентировочная цена: 150–300 грн'
+        return `<b>${d.name}</b><br/>Доступно: ${available}<br/>${exampleRoute}<br/>${approx}`
+      })
+      return {marker, data:d}
+    })
 
-// Service order button functionality
-document.addEventListener('click', (e)=>{
-  const orderBtn = e.target.closest('.btn.primary')
-  if(orderBtn && (e.target.textContent.includes('Заказать') || e.target.textContent.includes('Замовити'))){
-    e.preventDefault()
-    console.log('Order button clicked!')
-    // Scroll to contacts form
-    document.getElementById('contacts').scrollIntoView({behavior:'smooth'})
-    // Focus on name input
-    setTimeout(()=>{
-      const nameInput = document.querySelector('input[name="name"]')
-      if(nameInput) nameInput.focus()
-    }, 500)
+    activeTypes = new Set(models)
+    $$('.flt').forEach(cb=>{
+      cb.addEventListener('change', ()=>{
+        if(cb.checked) activeTypes.add(cb.value); else activeTypes.delete(cb.value)
+        markers.forEach(({marker, data})=>{
+          const visible = data.cars.some(c=>activeTypes.has(c))
+          if(visible){ marker.addTo(map) } else { map.removeLayer(marker) }
+        })
+      })
+    })
+  } catch (error) {
+    console.error('Map initialization failed:', error)
   }
-})
+}
+
+function initCarCards() {
+  $$('.car-card').forEach(card=>{
+    card.addEventListener('click', ()=>{
+      setModelByName(card.dataset.model)
+      location.hash = '#viewer'
+      document.getElementById('viewer').scrollIntoView({behavior:'smooth'})
+    })
+  })
+}
+
+function setModelByName(name){
+  const idx = models.indexOf(name)
+  modelIndex = idx>=0 ? idx : 0
+  updateSpecs()
+  if(cube) {
+    const colorMap = {sedan:0x2dd4bf, van:0x60a5fa, wagon:0xf59e0b}
+    cube.material.color.setHex(colorMap[models[modelIndex]])
+  }
+}
+
+function updateSpecs(){
+  if(!specsTable) return
+  const key = models[modelIndex]
+  const s = specsData[key]
+  specsTable.innerHTML = `<tr><td>${s.type}</td><td>${s.price}</td><td>${s.km}</td><td>${s.cap}</td></tr>`
+}
 
 // Auto-hide header on scroll down, show on scroll up
 let lastScrollY = window.scrollY
