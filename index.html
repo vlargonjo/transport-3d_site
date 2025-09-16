@@ -7,22 +7,32 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+      /* Critical mobile styles to avoid no-style flash on some mobile browsers */
+      html,body{height:100%}
+      body{margin:0;background:#0b0d12;color:#e7e9ee;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,'Helvetica Neue',Arial,'Noto Sans',sans-serif}
+      a{color:inherit}
+      .header{position:fixed;top:0;left:0;right:0;z-index:100}
+      .hero-full{background-size:cover;background-position:center}
+    </style>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
-    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="styles.css?v=20250916" />
   </head>
   <body>
-    <header class="container header">
-      <div class="brand">Transport 3D</div>
-      <nav class="nav">
-        <a href="#home">Главная</a>
-        <a href="#viewer">3D</a>
-        <a href="#services">Услуги</a>
-        <a href="#map">Карта</a>
-        <a href="#contacts">Контакты</a>
-      </nav>
-      <div class="lang-switch">
-        <button data-lang="ru" class="lang-btn active">RU</button>
-        <button data-lang="ua" class="lang-btn">UA</button>
+    <header class="header">
+      <div class="container header-bar">
+        <div class="brand">Transport 3D</div>
+        <nav class="nav">
+          <a href="#home">Главная</a>
+          <a href="#viewer">3D</a>
+          <a href="#services">Услуги</a>
+          <a href="#map">Карта</a>
+          <a href="#contacts">Контакты</a>
+        </nav>
+        <div class="lang-switch">
+          <button data-lang="ru" class="lang-btn active">RU</button>
+          <button data-lang="ua" class="lang-btn">UA</button>
+        </div>
       </div>
     </header>
 
@@ -31,32 +41,32 @@
       <section id="home" class="hero-full" style="background-image:url('hero.jpg');">
         <div class="hero-overlay"></div>
         <div class="container hero-content">
-          <div class="hero-eyebrow">Для тех, кто ценит качество</div>
-          <h1 class="hero-title">Ваш комфортный трансфер – без стресса и посредников</h1>
-          <p class="hero-sub">Путешествия – это больше, чем просто дорога.</p>
+          <div class="hero-eyebrow" data-i18n="eyebrow">Для тех, кто ценит качество</div>
+          <h1 class="hero-title" data-i18n="h1">Ваш комфортный трансфер – без стресса и посредников</h1>
+          <p class="hero-sub" data-i18n="h1sub">Путешествия – это больше, чем просто дорога.</p>
           <div class="cta-row">
-            <a class="btn primary" href="#contacts">Заказать поездку</a>
-            <a class="btn" href="#viewer">Рассчитать стоимость</a>
+            <a class="btn primary" href="#contacts" data-i18n="cta.order">Заказать поездку</a>
+            <a class="btn" href="#viewer" data-i18n="cta.calc">Рассчитать стоимость</a>
           </div>
         </div>
       </section>
 
       <!-- Models cards (moved below hero) -->
       <section id="models" class="container section">
-        <h2 class="section-title">Выберите тип автомобиля</h2>
-        <p class="section-subtitle">Легковые, микроавтобусы и универсалы</p>
+        <h2 class="section-title" data-i18n="types.title">Выберите тип автомобиля</h2>
+        <p class="section-subtitle" data-i18n="types.subtitle">Легковые, микроавтобусы и универсалы</p>
         <div class="cards">
           <div class="car-card" data-model="sedan" tabindex="0">
             <div class="frame"></div>
-            <div class="art sedan">Легковая</div>
+            <div class="art sedan" data-i18n="type.sedan">Легковая</div>
           </div>
           <div class="car-card" data-model="van" tabindex="0">
             <div class="frame"></div>
-            <div class="art van">Микроавтобус</div>
+            <div class="art van" data-i18n="type.van">Микроавтобус</div>
           </div>
           <div class="car-card" data-model="wagon" tabindex="0">
             <div class="frame"></div>
-            <div class="art wagon">Универсал</div>
+            <div class="art wagon" data-i18n="type.wagon">Универсал</div>
           </div>
         </div>
       </section>
@@ -65,14 +75,14 @@
       <section id="viewer" class="container section">
         <div class="section-header">
           <h2 data-i18n="viewer.title">3D-бокс модели</h2>
-          <div class="viewer-controls">
-            <button id="btn-prev" class="btn" data-i18n="viewer.prev">Пред. машина</button>
-            <button id="btn-next" class="btn" data-i18n="viewer.next">След. машина</button>
-            <button id="btn-ext" class="btn" data-i18n="viewer.ext">Камера: Снаружи</button>
-            <button id="btn-int" class="btn" data-i18n="viewer.int">Камера: Салон</button>
-            <button id="btn-vr" class="btn outline" data-i18n="viewer.vr">VR/AR (заглушка)</button>
-            <a class="btn" href="#home" data-i18n="viewer.back">На главную</a>
-          </div>
+        </div>
+        <div class="viewer-controls">
+          <button id="btn-prev" class="btn" data-i18n="viewer.prev">Пред. машина</button>
+          <button id="btn-next" class="btn" data-i18n="viewer.next">След. машина</button>
+          <button id="btn-vr" class="btn outline" data-i18n="viewer.vr">VR/AR (заглушка)</button>
+          <button id="btn-ext" class="btn" data-i18n="viewer.ext">Камера: Снаружи</button>
+          <button id="btn-int" class="btn" data-i18n="viewer.int">Камера: Салон</button>
+          <a class="btn" href="#home" data-i18n="viewer.back">На главную</a>
         </div>
         <div class="viewer-wrap">
           <canvas id="three-canvas" aria-label="3D просмотр"></canvas>
@@ -94,35 +104,93 @@
           <button id="btn-compare" class="btn outline" data-i18n="viewer.compare">Сравнить</button>
           <button id="btn-calc" class="btn outline" data-i18n="viewer.calc">Калькулятор стоимости</button>
         </div>
+        
       </section>
 
       <!-- Services -->
       <section id="services" class="container section">
         <h2 data-i18n="services.title">Услуги</h2>
         <div class="service-grid">
-          <div class="service-card">
-            <div class="icon">🚗</div>
-            <div class="title" data-i18n="services.rent">Аренда</div>
-            <div class="price">от 400 грн</div>
-            <button class="btn primary" data-i18n="services.order">Заказать</button>
-          </div>
-          <div class="service-card">
-            <div class="icon">🧳</div>
-            <div class="title" data-i18n="services.transfer">Трансфер</div>
-            <div class="price">от 500 грн</div>
-            <button class="btn primary" data-i18n="services.order">Заказать</button>
-          </div>
-          <div class="service-card">
+          <div class="service-card" data-service="cargo">
             <div class="icon">📦</div>
             <div class="title" data-i18n="services.cargo">Перевозка грузов</div>
             <div class="price">от 700 грн</div>
-            <button class="btn primary" data-i18n="services.order">Заказать</button>
+            <div class="service-actions">
+              <button class="btn primary" data-i18n="services.order">Заказать</button>
+              <button class="btn outline service-details-btn" data-i18n="services.details">Подробнее</button>
+            </div>
           </div>
-          <div class="service-card">
+          <div class="service-card" data-service="taxi">
             <div class="icon">🚕</div>
             <div class="title" data-i18n="services.taxi">Такси-услуги</div>
             <div class="price">от 100 грн</div>
-            <button class="btn primary" data-i18n="services.order">Заказать</button>
+            <div class="service-actions">
+              <button class="btn primary" data-i18n="services.order">Заказать</button>
+              <button class="btn outline service-details-btn" data-i18n="services.details">Подробнее</button>
+            </div>
+          </div>
+          <div class="service-card" data-service="pets">
+            <div class="icon">🐕</div>
+            <div class="title" data-i18n="services.pets">Поездка с животными</div>
+            <div class="price">от 200 грн</div>
+            <div class="service-actions">
+              <button class="btn primary" data-i18n="services.order">Заказать</button>
+              <button class="btn outline service-details-btn" data-i18n="services.details">Подробнее</button>
+            </div>
+          </div>
+          <div class="service-card" data-service="children">
+            <div class="icon">👶</div>
+            <div class="title" data-i18n="services.children">Поездка с детьми</div>
+            <div class="price">от 150 грн</div>
+            <div class="service-actions">
+              <button class="btn primary" data-i18n="services.order">Заказать</button>
+              <button class="btn outline service-details-btn" data-i18n="services.details">Подробнее</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Service Details Modal -->
+        <div id="service-modal" class="service-modal">
+          <div class="service-modal-content">
+            <div class="service-modal-header">
+              <div class="modal-nav">
+                <button class="btn outline" id="svc-prev">◀</button>
+              </div>
+              <h3 id="modal-title"></h3>
+              <div class="modal-nav">
+                <button class="btn outline" id="svc-next">▶</button>
+              </div>
+              <button class="service-modal-close">&times;</button>
+            </div>
+            <div id="modal-content" class="service-modal-body"></div>
+            <div class="service-modal-footer">
+              <button class="btn primary" data-i18n="services.order">Заказать</button>
+              <button class="btn service-modal-close" data-i18n="modal.close">Закрыть</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="features-grid">
+          <div class="feature-card">
+            <div class="feature-title" data-i18n="feat.inspect.title">Осмотр автомобиля онлайн</div>
+            <div class="feature-text">
+              <p data-i18n="feat.inspect.p1">3D-модель с возможностью «заглянуть внутрь» до заказа;</p>
+              <p data-i18n="feat.inspect.p2">можно посмотреть салон, багажник, компоновку.</p>
+            </div>
+          </div>
+          <div class="feature-card">
+            <div class="feature-title" data-i18n="feat.map.title">Выбор авто на карте</div>
+            <div class="feature-text">
+              <p data-i18n="feat.map.p1">карта города → кликаешь район → система показывает доступные авто;</p>
+              <p data-i18n="feat.map.p2">опция «подобрать ближайшее» автоматически.</p>
+            </div>
+          </div>
+          <div class="feature-card">
+            <div class="feature-title" data-i18n="feat.track.title">Отслеживание в реальном времени</div>
+            <div class="feature-text">
+              <p data-i18n="feat.track.p1">GPS-иконка движется по карте;</p>
+              <p data-i18n="feat.track.p2">клиент видит, где находится машина.</p>
+            </div>
           </div>
         </div>
       </section>
@@ -179,10 +247,10 @@
       <span>© <span id="year"></span> Transport 3D</span>
     </footer>
 
-    <script src="https://unpkg.com/three@0.160.0/build/three.min.js"></script>
-    <script src="https://unpkg.com/three@0.160.0/examples/js/controls/OrbitControls.js"></script>
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-    <script src="app.js"></script>
+    <script defer src="https://unpkg.com/three@0.160.0/build/three.min.js"></script>
+    <script defer src="https://unpkg.com/three@0.160.0/examples/js/controls/OrbitControls.js"></script>
+    <script defer src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <script defer src="app.js?v=20250916"></script>
   </body>
   </html>
 
