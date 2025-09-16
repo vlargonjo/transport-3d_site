@@ -1,9 +1,9 @@
-:root{--bg:#0b0d12;--fg:#e7e9ee;--muted:#9aa3b2;--acc:#2dd4bf;--acc-2:#60a5fa;--card:#121622;--line:#1f2533}
+:root{--bg:#0b0d12;--fg:#e7e9ee;--muted:#9aa3b2;--acc:#2dd4bf;--acc-2:#60a5fa;--card:#121622;--line:#1f2533;--header-h:64px}
 *{box-sizing:border-box}
 html,body{height:100%}
-body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,'Helvetica Neue',Arial,'Noto Sans',sans-serif;background:var(--bg);color:var(--fg);}
+body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,'Helvetica Neue',Arial,'Noto Sans',sans-serif;background:var(--bg);color:var(--fg);padding-top:var(--header-h);}
 .container{max-width:1152px;margin:0 auto;padding:0 16px}
-.header{display:flex;align-items:center;justify-content:space-between;padding:16px 0;position:sticky;top:0;background:linear-gradient(180deg,rgba(11,13,18,.95),rgba(11,13,18,.7) 70%,rgba(11,13,18,0));backdrop-filter:blur(8px);z-index:10}
+.header{display:flex;align-items:center;justify-content:space-between;padding:16px 0;min-height:var(--header-h);position:fixed;top:0;left:0;right:0;background:linear-gradient(180deg,rgba(11,13,18,.95),rgba(11,13,18,.7) 70%,rgba(11,13,18,0));backdrop-filter:blur(8px);z-index:100}
 .brand{font-weight:700;letter-spacing:.3px}
 .nav a{color:var(--fg);text-decoration:none;margin:0 8px;padding:8px 10px;border-radius:8px}
 .nav a:hover{background:var(--line)}
@@ -33,7 +33,7 @@ body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,C
 .cta-row{display:flex;gap:10px;margin-top:16px}
 
 /* Full hero */
-.hero-full{position:relative;min-height:72vh;display:flex;align-items:center;justify-content:flex-start;background-size:cover;background-position:center;border-bottom:1px solid var(--line)}
+.hero-full{position:relative;min-height:calc(100vh - var(--header-h));display:flex;align-items:center;justify-content:flex-start;background-size:cover;background-position:center;border-bottom:1px solid var(--line)}
 .hero-overlay{position:absolute;inset:0;background:linear-gradient(0deg, rgba(0,0,0,.55), rgba(0,0,0,.35))}
 .hero-content{position:relative;z-index:1;padding:64px 16px}
 .hero-eyebrow{color:#ffd58a;font-weight:600;margin-bottom:8px}
