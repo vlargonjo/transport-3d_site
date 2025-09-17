@@ -39,6 +39,10 @@ const translations = {
     'services.order': 'Заказать',
     'services.details': 'Подробнее',
     'services.back': 'Назад',
+    'services.cargo.details': '• Перевозка мебели, техники, личных вещей\n• Упаковка и разгрузка (по договоренности)\n• Страхование груза\n• Отслеживание в реальном времени',
+    'services.taxi.details': '• Быстрое прибытие (5-15 минут)\n• Фиксированные тарифы\n• Опытные водители\n• Чистые и комфортные авто',
+    'services.pets.details': '• Специальные переноски для животных\n• Водители с опытом перевозки питомцев\n• Остановки для прогулок\n• Дополнительная уборка салона',
+    'services.children.details': '• Детские автокресла всех категорий\n• Водители с опытом перевозки детей\n• Игрушки и развлечения в дороге\n• Контроль температуры в салоне',
     'modal.close': 'Закрыть',
     // Features
     'feat.inspect.title': 'Осмотр автомобиля онлайн',
@@ -58,6 +62,7 @@ const translations = {
     'form.name': 'Имя',
     'form.phone': 'Телефон',
     'form.msg': 'Комментарий',
+    'form.location': 'Геопозиция',
     'form.send': 'Оставить заявку',
   },
   ua: {
@@ -99,6 +104,10 @@ const translations = {
     'services.order': 'Замовити',
     'services.details': 'Детальніше',
     'services.back': 'Назад',
+    'services.cargo.details': '• Перевезення меблів, техніки, особистих речей\n• Пакування та розвантаження (за домовленістю)\n• Страхування вантажу\n• Відстеження в реальному часі',
+    'services.taxi.details': '• Швидке прибуття (5-15 хвилин)\n• Фіксовані тарифи\n• Досвідчені водії\n• Чисті та комфортні авто',
+    'services.pets.details': '• Спеціальні переноски для тварин\n• Водії з досвідом перевезення улюбленців\n• Зупинки для прогулянок\n• Додаткове прибирання салону',
+    'services.children.details': '• Дитячі автокрісла всіх категорій\n• Водії з досвідом перевезення дітей\n• Іграшки та розваги в дорозі\n• Контроль температури в салоні',
     'modal.close': 'Закрити',
     // Features
     'feat.inspect.title': 'Огляд автомобіля онлайн',
@@ -118,6 +127,7 @@ const translations = {
     'form.name': "Ім'я",
     'form.phone': 'Телефон',
     'form.msg': 'Коментар',
+    'form.location': 'Геопозиція',
     'form.send': 'Надіслати заявку',
   }
 }
@@ -131,7 +141,13 @@ function applyI18n(lang){
   $$('.lang-btn').forEach(b=>b.classList.toggle('active', b.dataset.lang===lang))
   $$('[data-i18n]').forEach(el=>{
     const key = el.getAttribute('data-i18n')
-    el.textContent = translations[lang][key] || el.textContent
+    const text = translations[lang][key] || el.textContent
+    if (text.includes('\n')) {
+      // Handle multi-line text for service details
+      el.innerHTML = text.split('\n').map(line => `<p>${line}</p>`).join('')
+    } else {
+      el.textContent = text
+    }
   })
 }
 
